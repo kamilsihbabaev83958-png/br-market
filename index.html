@@ -1,0 +1,777 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta name="google-site-verification" content="DbZLHzFxDCfT_oU3_BWSE4Bob12kVOlbu5387c56vL4" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080b10"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
+<title>BR MARKET — маркет игровых предметов Black Russia</title>
+<meta name="description" content="BR MARKET — независимая площадка для игроков Black Russia. Покупай и продавай машины, дома, бизнес, одежду, аксессуары и другие игровые предметы. Выбирай сервер, находи объявления и общайся с продавцом напрямую.">
+<meta property="og:title" content="BR MARKET — маркет игровых предметов Black Russia">
+<meta property="og:description" content="Независимая площадка объявлений Black Russia: машины, дома, бизнес, одежда, аксессуары и предметы.">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--bg:#070a0f;--card:#0e141d;--line:#293443;--text:#f4f7fb;--muted:#8f9aac;--red:#ff2438;--green:#24db7c}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,sans-serif}.wrap{max-width:1100px;margin:auto;padding-bottom:80px}
+header{padding:18px;position:sticky;top:0;z-index:5;background:#080b0ff2;backdrop-filter:blur(15px);border-bottom:1px solid var(--line)}.brand{font-size:29px;font-weight:900}.brand b{color:var(--red)}.sub{font-size:12px;color:var(--muted)}.top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+button{border:0;border-radius:12px;padding:11px 14px;font-weight:800;color:#fff;background:#161f2b}button.red{background:linear-gradient(135deg,#ff3345,#ce0d21)}input,textarea,select{width:100%;background:#0c131d;border:1px solid var(--line);border-radius:12px;padding:12px;color:#fff;outline:none}.search{margin-top:12px}.server-filter{position:relative;display:flex;flex-direction:column;align-items:flex-end;justify-content:flex-end;margin:4px 0 10px}.server-label{width:100%;text-align:right;font-size:9px;color:var(--muted);margin-bottom:3px}.server-filter.box{padding:0;background:transparent;border:0;margin-bottom:10px}.server-filter select{display:none!important;width:0!important;height:0!important;position:absolute!important;opacity:0!important;pointer-events:none!important}
+.server-pick-btn{display:inline-flex;align-items:center;justify-content:center;gap:4px;width:auto;min-width:110px;max-width:170px;height:30px;font-size:10px;text-align:center;background:#151e2a;border:1px solid #ff243866;padding:4px 8px;border-radius:8px;box-shadow:none;cursor:pointer}.server-pick-btn span{font-size:8px}
+.server-pick-btn b{font-size:10px}.server-list{display:grid;grid-template-columns:1fr;gap:3px;margin-top:0}.server-list button{font-size:10px;padding:7px 6px;background:#111923;border:1px solid var(--line);border-radius:8px}.server-list button.selected{background:#ff2438;border-color:#ff2438}
+.server-menu{display:none;position:absolute;right:0;top:34px;width:190px;max-height:55vh;overflow:auto;padding:7px;background:#0c121a;border:1px solid #ff243866;border-radius:12px;box-shadow:0 12px 30px #000b;z-index:30}.server-menu.show{display:block}
+.server-badge{display:inline-block;margin-top:6px;padding:3px 6px;border-radius:6px;background:#18212d;color:#fff;font-size:10px;font-weight:900}
+.bottom button{font-size:9px;padding:4px 2px;line-height:1.25;min-width:0}.bottom button::first-line{font-size:15px}
+main{padding:16px}.tabs{display:flex;gap:8px;overflow:auto;margin-bottom:15px}.tabs button.active{background:var(--red)}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}.thumb{height:220px;display:grid;place-items:center;font-size:22px;background:linear-gradient(135deg,#17202c,#35070e)}.thumb img{width:100%;height:100%;object-fit:cover;display:block}.body{padding:12px}.price{font-size:20px;font-weight:900;margin:5px 0}.muted{color:var(--muted)}.green{color:var(--green)}.danger{color:#ff6170}.row{display:flex;gap:8px;align-items:center}.row>*{flex:1}.stack{display:grid;gap:10px}.box{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:15px;margin-bottom:12px}.hidden{display:none!important}.admin{border-color:#ff243866;box-shadow:0 0 20px #ff243811}.modal{position:fixed;inset:0;background:#000b;display:none;align-items:end;z-index:20}.modal.show{display:flex}.sheet{background:#0c121a;border:1px solid var(--line);border-radius:22px 22px 0 0;padding:18px;width:100%;max-height:90vh;overflow:auto}.bottom{position:fixed;bottom:0;left:0;right:0;background:#0a0f16ee;backdrop-filter:blur(14px);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,minmax(0,1fr));padding:5px 4px;gap:2px;z-index:10}.bottom button{background:transparent;color:var(--muted)}.bottom button.active{color:var(--red);background:#141b25;border-radius:9px}
+@media(max-width:550px){.grid{grid-template-columns:1fr 1fr}.thumb{height:190px;font-size:8px}.price{font-size:17px}.server-list{grid-template-columns:1fr}}@media(min-width:800px){.grid{grid-template-columns:repeat(3,1fr)}}
+
+@media(max-width:600px){
+  header{padding:12px 12px 8px}.brand{font-size:22px}.sub{font-size:9px}.search{margin-top:8px}
+  main{padding:10px 10px 76px}.server-filter{margin:2px 0 8px}.server-label{display:none}.server-pick-btn{min-width:92px;max-width:130px;height:26px;font-size:9px;padding:3px 7px}.server-pick-btn b{font-size:9px}.server-menu{top:30px;width:170px;max-height:50vh}.server-list button{font-size:9px;padding:6px 5px}
+  .tabs{gap:5px;margin-bottom:8px}.tabs button{font-size:10px;padding:7px 8px}
+  .grid{gap:8px}.card{border-radius:11px}.thumb{height:170px;font-size:15px}.body{padding:8px}.body h3{font-size:13px;margin:4px 0}.price{font-size:15px}.server-badge{font-size:8px;padding:2px 4px;margin-top:4px}.body button{font-size:9px;padding:7px 5px;margin-top:6px!important}
+  .bottom{height:54px;padding:3px 2px;gap:1px}.bottom button{font-size:8px!important;padding:2px 0!important;border-radius:7px!important;line-height:1.05}.bottom button::first-line{font-size:13px}.bottom br{line-height:7px}
+}
+
+/* --- Visual polish v3 --- */
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 0 10px}.section-head h2{font-size:18px;line-height:1.15;margin:0;font-weight:850}.section-head .muted{font-size:11px}.tabs{scrollbar-width:none;align-items:center}.tabs::-webkit-scrollbar{display:none}.tabs button{white-space:nowrap;flex:0 0 auto}.tabs button.active{box-shadow:0 5px 16px #ff243833}
+.thumb.art{position:relative;overflow:hidden;background:radial-gradient(circle at 72% 20%,#3a1520 0 12%,transparent 28%),linear-gradient(145deg,#121b28 0%,#0b1018 55%,#260b12 100%)}.thumb.art:before{content:"";position:absolute;left:-8%;right:-8%;bottom:-12%;height:48%;background:linear-gradient(160deg,transparent 0 35%,#1b2635 36% 42%,transparent 43%),linear-gradient(20deg,transparent 0 47%,#101722 48% 100%);transform:skewY(-7deg)}.thumb.art:after{content:"";position:absolute;inset:9px 12px auto auto;width:34%;height:45%;background:repeating-linear-gradient(90deg,#27384b 0 6px,transparent 6px 12px);opacity:.45;border-radius:3px;clip-path:polygon(0 100%,0 42%,12% 42%,12% 0,26% 0,26% 56%,40% 56%,40% 25%,58% 25%,58% 64%,75% 64%,75% 12%,100% 12%,100% 100%)}.art-car{position:absolute;z-index:2;left:18%;bottom:13%;width:64%;height:32%;background:linear-gradient(180deg,#ff4352,#a90f20);border-radius:48% 28% 18% 16%/70% 70% 25% 25%;box-shadow:0 0 18px #ff243866}.art-car:before{content:"";position:absolute;left:18%;top:-46%;width:54%;height:60%;background:#172231;border:2px solid #566274;border-bottom:0;border-radius:60% 60% 8% 8%}.art-wheel{position:absolute;z-index:3;bottom:3%;width:17%;height:36%;background:#070a0f;border:2px solid #4a5565;border-radius:50%;box-shadow:inset 0 0 0 3px #141c27}.art-wheel.a{left:16%}.art-wheel.b{right:16%}
+.my-list-item{padding:10px!important;border-radius:12px!important;margin-bottom:8px!important}.my-list-actions{display:flex;justify-content:flex-end;gap:6px;margin-top:7px}.my-list-actions button{font-size:10px;padding:7px 9px;border-radius:9px}.chat-list-item{display:flex;align-items:center;gap:10px;width:100%;text-align:left;margin:0 0 7px;padding:10px!important;border:1px solid var(--line);background:#101822;border-radius:12px}.chat-avatar{width:34px;height:34px;flex:0 0 34px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#252f3e,#6e1020);font-size:15px}.chat-preview{min-width:0;flex:1}.chat-preview b,.chat-preview .muted{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.chat-preview b{font-size:12px}.chat-preview .muted{font-size:10px;margin-top:2px}.chat-time{font-size:9px;color:var(--muted);white-space:nowrap}.chat-sheet{padding:0!important;overflow:hidden!important}.chat-head{padding:13px 15px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#111a25,#0c121a)}.chat-head h2{font-size:16px;margin:0;text-align:left}.chat-messages{padding:12px 12px 8px;max-height:58vh!important;overflow:auto;background:radial-gradient(circle at 20% 10%,#1a202b 0,transparent 30%),#080d14}.chat-compose{padding:9px 10px;border-top:1px solid var(--line);background:#0c121a}.chat-compose input{padding:10px 11px;font-size:12px}.chat-compose button{font-size:11px;padding:9px 10px}.empty-chat{padding:22px 10px;text-align:center;border:1px dashed #2b3544;border-radius:12px;background:#0d141d;font-size:12px}
+@media(max-width:600px){.section-head h2{font-size:17px}.my-list-item{padding:9px!important}.my-list-actions button{font-size:9px;padding:6px 8px}.chat-head{padding:12px}.chat-head h2{font-size:15px}.chat-messages{max-height:55vh!important}}
+
+/* BR Market visual stage v4 */
+.market-hero{position:relative;min-height:126px;margin:2px 0 10px;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:linear-gradient(90deg,rgba(6,9,15,.96) 0%,rgba(6,9,15,.78) 42%,rgba(6,9,15,.28) 100%),url('assets/city.jpg') center/cover;box-shadow:0 12px 30px #0006}.market-hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,#05080dcc 100%);pointer-events:none}.market-hero-copy{position:relative;z-index:2;display:flex;flex-direction:column;justify-content:center;min-height:126px;padding:20px 105px 20px 18px;max-width:620px}.hero-kicker{font-size:9px;letter-spacing:2px;color:#ff6370;font-weight:800;margin-bottom:5px}.market-hero-copy strong{font-size:21px;line-height:1.05}.market-hero-copy span:last-child{font-size:10px;color:#b9c2cf;margin-top:7px}.market-brand-tile{position:absolute;z-index:3;right:12px;top:12px;width:82px;height:82px;border:1px solid #ffffff25;border-radius:14px;overflow:hidden;background:#090d14;box-shadow:0 8px 22px #0008}.market-brand-tile img{width:100%;height:100%;object-fit:cover;display:block}.market-brand-tile span{position:absolute;left:5px;right:5px;bottom:5px;text-align:center;font-size:7px;letter-spacing:.8px;font-weight:900;color:#fff;text-shadow:0 2px 5px #000;background:#0009;border-radius:6px;padding:3px 2px}.thumb.art{background:#0a0f16}.thumb.art .placeholder-art{display:block;width:100%;height:100%;object-fit:cover;filter:saturate(.92) brightness(.88);transition:transform .25s ease,filter .25s ease}.card:hover .placeholder-art{transform:scale(1.025);filter:saturate(1) brightness(.98)}.tabs{display:flex!important;flex-wrap:nowrap!important;overflow-x:auto!important;overflow-y:hidden!important;padding-bottom:2px}.tabs button{flex:0 0 auto!important}
+@media(max-width:600px){.market-hero{min-height:108px;border-radius:14px}.market-hero-copy{min-height:108px;padding:15px 95px 15px 14px}.market-hero-copy strong{font-size:17px}.market-hero-copy span:last-child{font-size:9px}.market-brand-tile{width:68px;height:68px;right:10px;top:10px;border-radius:12px}.market-brand-tile span{font-size:6px}.tabs{gap:4px!important}.tabs button{font-size:9px!important;padding:6px 7px!important}}
+
+.filters{display:grid;grid-template-columns:1fr 1fr auto auto;gap:7px;margin:0 0 12px}.filters input{min-width:0;padding:9px 10px;font-size:11px}.filters button{font-size:10px;padding:8px 10px;white-space:nowrap}.filters button.active{border:1px solid var(--red);box-shadow:0 0 0 1px #ff243833;background:#211019}.price-label{font-size:9px;color:var(--muted);margin:0 0 5px}.tabs button.active{background:var(--red);border:1px solid #ff6370;box-shadow:0 0 0 2px #ff243833,0 5px 16px #ff243833}
+@media(max-width:600px){.filters{grid-template-columns:1fr 1fr;gap:6px}.filters button{width:100%;font-size:9px;padding:7px 5px}.filters input{font-size:10px;padding:8px}.price-label{font-size:8px}}
+
+/* BR MARKET feature pack */
+.feature-bar{display:grid;grid-template-columns:1fr auto auto;gap:7px;align-items:center;margin:8px 0 12px}.feature-bar .mini-btn{padding:8px 10px;font-size:11px;border:1px solid var(--line);background:#101822;border-radius:10px;white-space:nowrap}.feature-bar .mini-btn.active{border-color:#ff2438;background:#281018;box-shadow:0 0 14px #ff243822}.filter-row{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:0 0 8px}.filters{display:grid;grid-template-columns:1fr 1fr auto auto;gap:7px;margin-bottom:8px}.filters button{padding:9px 8px;font-size:10px}.favorite-btn{position:absolute;right:8px;top:8px;width:34px;height:34px;padding:0;border-radius:50%;background:#080b0fcc;border:1px solid #ffffff22;font-size:18px;z-index:2}.thumb-wrap{position:relative}.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:10px 0}.stat{background:#101822;border:1px solid var(--line);border-radius:11px;padding:9px;text-align:center}.stat b{display:block;font-size:15px}.stat span{font-size:9px;color:var(--muted)}.rating{display:flex;gap:3px;align-items:center;margin:8px 0}.seller-rating{display:inline-flex;align-items:center;gap:5px;color:#ffd166;font-weight:700}.rating-summary{font-size:11px;color:var(--muted)}.rating button{padding:5px 6px;background:transparent;font-size:18px}.notify-dot{display:inline-grid;place-items:center;min-width:16px;height:16px;padding:0 4px;border-radius:9px;background:var(--red);font-size:9px;margin-left:3px}.online-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:4px;box-shadow:0 0 8px #24db7c88}.offline-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#667080;margin-right:4px}.fav-empty{padding:22px;text-align:center;border:1px dashed var(--line);border-radius:12px}.expiry{font-size:9px;color:#ffb5bd;margin-top:5px}.quick-sort{display:flex;gap:6px;overflow:auto;margin-bottom:8px}.quick-sort button{flex:0 0 auto;font-size:9px;padding:7px 9px}.section-subtitle{font-size:10px;color:var(--muted);margin:-5px 0 10px}
+@media(max-width:600px){.feature-bar{grid-template-columns:1fr auto auto}.feature-bar .mini-btn{font-size:9px;padding:7px 8px}.filters{grid-template-columns:1fr 1fr}.filters button{font-size:9px}.stat-grid{gap:5px}.stat{padding:7px}.stat b{font-size:13px}.stat span{font-size:8px}.favorite-btn{width:30px;height:30px;font-size:16px}}
+
+.publish-btn{width:100%;margin-top:8px;background:#252a32!important;color:#9299a3!important;border:1px solid #3a414c!important;box-shadow:none!important;transition:background .18s,color .18s,border-color .18s,box-shadow .18s}
+.publish-btn.ready{background:linear-gradient(135deg,#ff2438,#a90e26)!important;color:#fff!important;border-color:#ff4050!important;box-shadow:0 0 16px #ff243844!important}
+.publish-btn:active{transform:translateY(1px)}
+.server-required-note{display:none;margin:7px 0 2px;padding:9px 11px;border:1px solid #71313a;border-radius:10px;background:#261217;color:#ffb8c0;font-size:13px;line-height:1.4}
+.server-required-note.show{display:block}
+
+/* Compact price controls and visible favorite state */
+.sort-row{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin:0 0 5px}
+.sort-row button{font-size:9px;padding:5px 6px;border-radius:8px;min-height:25px}
+.filters{grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto auto;gap:4px;margin:0 0 10px}
+.filters input{min-width:0;width:100%;height:24px;padding:3px 6px;font-size:9px;border-radius:7px}
+.filters button{font-size:8px;padding:4px 6px;border-radius:7px;min-height:24px}
+.price-label{font-size:7px;margin:0 0 3px;line-height:1.2}
+.favorite-btn.is-favorite{background:#e5092b!important;border-color:#ff5268!important;color:#fff!important;box-shadow:0 0 0 2px #ff243855}
+@media(max-width:600px){.filters{grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto auto;gap:3px}.filters input{font-size:8px;padding:3px 4px}.filters button{font-size:7px;padding:4px 4px}.sort-row button{font-size:8px;padding:5px 4px}.price-label{font-size:7px}}
+
+/* BR Market rules modal */
+#br-rules-overlay[hidden]{display:none!important}
+
+#br-rules-overlay{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(0,0,0,.86);backdrop-filter:blur(5px)}
+#br-rules-overlay .br-rules-card{position:relative;width:min(620px,100%);max-height:min(82vh,760px);overflow:auto;background:#0e141d;color:#f4f7fb;border:1px solid #39485b;border-radius:18px;padding:24px 20px;box-shadow:0 24px 80px #000a}
+#br-rules-overlay h2{font-size:20px;line-height:1.3;margin:0 42px 16px 0;color:#fff;font-weight:900}
+#br-rules-overlay ol{margin:0;padding-left:23px;color:#e5eaf2;font-size:14px;line-height:1.55}
+#br-rules-overlay li{padding-left:4px;margin:0 0 10px}
+#br-rules-overlay .br-rules-close{position:absolute;right:12px;top:10px;width:36px;height:36px;border:1px solid #536174;border-radius:10px;background:#1a2431;color:#fff;font-size:24px;line-height:1;cursor:pointer}
+#br-rules-overlay .br-rules-close[hidden]{display:none}
+#br-rules-overlay .br-rules-timer{margin-top:14px;color:#aab6c8;font-size:12px;text-align:center}
+@media(max-width:420px){#br-rules-overlay .br-rules-card{padding:21px 16px}#br-rules-overlay h2{font-size:18px}#br-rules-overlay ol{font-size:13px}}
+
+.notify-dot.hidden{display:none}
+</style></head>
+<body>
+
+<div id="br-rules-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="br-rules-title">
+  <section class="br-rules-card">
+    <button class="br-rules-close" id="br-rules-close" type="button" aria-label="Закрыть правила" hidden>×</button>
+    <h2 id="br-rules-title">ВАЖНО: ПРОЧИТАЙТЕ ПРАВИЛА</h2>
+    <ol>
+      <li>Администрация удаляет объявления с неприемлемым, нецензурным, незаконным или вводящим в заблуждение содержанием. При повторных нарушениях доступ может быть ограничен или заблокирован.</li>
+      <li>Объявления автоматически удаляются через 2 дня. Связанный с объявлением чат также удаляется.</li>
+      <li>Для поддержания работы сайта объявление и связанный чат могут быть удалены раньше срока — максимум за 5 часов до планового удаления.</li>
+      <li>Указывайте честную цену и точное описание, выбирайте правильный сервер и размещайте фотографии, соответствующие объявлению.</li>
+      <li>Запрещены мошенничество, обман, спам, дубли объявлений, угрозы, преследование и публикация чужих личных данных.</li>
+      <li>Не отправляйте в чате пароли, коды подтверждения и другие данные для входа в аккаунты.</li>
+      <li>BR Market — независимая площадка и не является официальным сервисом Black Russia.</li>
+      <li>Администрация может удалять объявления и ограничивать доступ при нарушении правил или для обеспечения стабильной работы сайта.</li>
+    </ol>
+    <div class="br-rules-timer" id="br-rules-timer">Кнопка закрытия появится через 5 секунд</div>
+  </section>
+</div>
+
+<div class="wrap">
+<header><div class="top"><div><div class="brand"><b>BR</b> MARKET</div><div class="sub">Игровая площадка объявлений · не официальный сервис игры · v2</div></div><button id="authBtn" onclick="openAuth()">Войти</button></div><div class="search"><input id="q" placeholder="🔎 Поиск предметов..." oninput="render()"></div></header>
+<main>
+<section id="home">
+<div class="market-hero">
+  <div class="market-hero-copy"><span class="hero-kicker">ВИТРИНА</span><strong>Найди свой вариант</strong><span>Машины · дома · бизнес · вещи</span></div>
+  <div class="market-brand-tile" aria-label="BR Market"><img src="assets/brand.jpg" alt="BR Market"><span>BR MARKET</span></div>
+</div>
+<div class="server-filter box"><div class="server-label">СЕРВЕР ДЛЯ ПРОСМОТРА</div>
+  <button type="button" id="serverPickBtn" class="server-pick-btn" onclick="toggleServerMenu()">
+    🌐 <b id="serverPickText">Все серверы</b> <span style="float:right">▼</span>
+  </button><div id="serverMenu" class="server-menu">
+    <div class="server-list"><button type="button" data-server="" onclick="chooseServer(this.dataset.server)">🌐 Все серверы</button>
+<button type="button" data-server="01|RED" onclick="chooseServer(this.dataset.server)">[01] RED</button>
+<button type="button" data-server="02|GREEN" onclick="chooseServer(this.dataset.server)">[02] GREEN</button>
+<button type="button" data-server="03|BLUE" onclick="chooseServer(this.dataset.server)">[03] BLUE</button>
+<button type="button" data-server="04|YELLOW" onclick="chooseServer(this.dataset.server)">[04] YELLOW</button>
+<button type="button" data-server="05|ORANGE" onclick="chooseServer(this.dataset.server)">[05] ORANGE</button>
+<button type="button" data-server="06|PURPLE" onclick="chooseServer(this.dataset.server)">[06] PURPLE</button>
+<button type="button" data-server="07|LIME" onclick="chooseServer(this.dataset.server)">[07] LIME</button>
+<button type="button" data-server="08|PINK" onclick="chooseServer(this.dataset.server)">[08] PINK</button>
+<button type="button" data-server="09|CHERRY" onclick="chooseServer(this.dataset.server)">[09] CHERRY</button>
+<button type="button" data-server="10|BLACK" onclick="chooseServer(this.dataset.server)">[10] BLACK</button>
+<button type="button" data-server="11|INDIGO" onclick="chooseServer(this.dataset.server)">[11] INDIGO</button>
+<button type="button" data-server="12|WHITE" onclick="chooseServer(this.dataset.server)">[12] WHITE</button>
+<button type="button" data-server="13|MAGENTA" onclick="chooseServer(this.dataset.server)">[13] MAGENTA</button>
+<button type="button" data-server="14|CRIMSON" onclick="chooseServer(this.dataset.server)">[14] CRIMSON</button>
+<button type="button" data-server="15|GOLD" onclick="chooseServer(this.dataset.server)">[15] GOLD</button>
+<button type="button" data-server="16|AZURE" onclick="chooseServer(this.dataset.server)">[16] AZURE</button>
+<button type="button" data-server="17|PLATINUM" onclick="chooseServer(this.dataset.server)">[17] PLATINUM</button>
+<button type="button" data-server="18|AQUA" onclick="chooseServer(this.dataset.server)">[18] AQUA</button>
+<button type="button" data-server="19|GRAY" onclick="chooseServer(this.dataset.server)">[19] GRAY</button>
+<button type="button" data-server="20|ICE" onclick="chooseServer(this.dataset.server)">[20] ICE</button>
+<button type="button" data-server="21|CHILLI" onclick="chooseServer(this.dataset.server)">[21] CHILLI</button>
+<button type="button" data-server="22|CHOCO" onclick="chooseServer(this.dataset.server)">[22] CHOCO</button>
+<button type="button" data-server="23|MOSCOW" onclick="chooseServer(this.dataset.server)">[23] MOSCOW</button>
+<button type="button" data-server="24|SPB" onclick="chooseServer(this.dataset.server)">[24] SPB</button>
+<button type="button" data-server="25|UFA" onclick="chooseServer(this.dataset.server)">[25] UFA</button>
+<button type="button" data-server="26|SOCHI" onclick="chooseServer(this.dataset.server)">[26] SOCHI</button>
+<button type="button" data-server="27|KAZAN" onclick="chooseServer(this.dataset.server)">[27] KAZAN</button>
+<button type="button" data-server="28|SAMARA" onclick="chooseServer(this.dataset.server)">[28] SAMARA</button>
+<button type="button" data-server="29|ROSTOV" onclick="chooseServer(this.dataset.server)">[29] ROSTOV</button>
+<button type="button" data-server="30|ANAPA" onclick="chooseServer(this.dataset.server)">[30] ANAPA</button>
+<button type="button" data-server="31|EKB" onclick="chooseServer(this.dataset.server)">[31] EKB</button>
+<button type="button" data-server="32|KRASNODAR" onclick="chooseServer(this.dataset.server)">[32] KRASNODAR</button>
+<button type="button" data-server="33|ARZAMAS" onclick="chooseServer(this.dataset.server)">[33] ARZAMAS</button>
+<button type="button" data-server="34|NOVOSIB" onclick="chooseServer(this.dataset.server)">[34] NOVOSIB</button>
+<button type="button" data-server="35|GROZNY" onclick="chooseServer(this.dataset.server)">[35] GROZNY</button>
+<button type="button" data-server="36|SARATOV" onclick="chooseServer(this.dataset.server)">[36] SARATOV</button>
+<button type="button" data-server="37|OMSK" onclick="chooseServer(this.dataset.server)">[37] OMSK</button>
+<button type="button" data-server="38|IRKUTSK" onclick="chooseServer(this.dataset.server)">[38] IRKUTSK</button>
+<button type="button" data-server="39|VOLGOGRAD" onclick="chooseServer(this.dataset.server)">[39] VOLGOGRAD</button>
+<button type="button" data-server="40|VORONEZH" onclick="chooseServer(this.dataset.server)">[40] VORONEZH</button>
+<button type="button" data-server="41|BELGOROD" onclick="chooseServer(this.dataset.server)">[41] BELGOROD</button>
+<button type="button" data-server="42|MAKHACHKALA" onclick="chooseServer(this.dataset.server)">[42] MAKHACHKALA</button>
+<button type="button" data-server="43|VLADIKAVKAZ" onclick="chooseServer(this.dataset.server)">[43] VLADIKAVKAZ</button>
+<button type="button" data-server="44|VLADIVOSTOK" onclick="chooseServer(this.dataset.server)">[44] VLADIVOSTOK</button>
+<button type="button" data-server="45|KALININGRAD" onclick="chooseServer(this.dataset.server)">[45] KALININGRAD</button>
+<button type="button" data-server="46|CHELYABINSK" onclick="chooseServer(this.dataset.server)">[46] CHELYABINSK</button>
+<button type="button" data-server="47|KRASNOYARSK" onclick="chooseServer(this.dataset.server)">[47] KRASNOYARSK</button>
+<button type="button" data-server="48|CHEBOKSARY" onclick="chooseServer(this.dataset.server)">[48] CHEBOKSARY</button>
+<button type="button" data-server="49|KHABAROVSK" onclick="chooseServer(this.dataset.server)">[49] KHABAROVSK</button>
+<button type="button" data-server="50|PERM" onclick="chooseServer(this.dataset.server)">[50] PERM</button>
+<button type="button" data-server="51|TULA" onclick="chooseServer(this.dataset.server)">[51] TULA</button>
+<button type="button" data-server="52|RYAZAN" onclick="chooseServer(this.dataset.server)">[52] RYAZAN</button>
+<button type="button" data-server="53|MURMANSK" onclick="chooseServer(this.dataset.server)">[53] MURMANSK</button>
+<button type="button" data-server="54|PENZA" onclick="chooseServer(this.dataset.server)">[54] PENZA</button>
+<button type="button" data-server="55|KURSK" onclick="chooseServer(this.dataset.server)">[55] KURSK</button>
+<button type="button" data-server="56|ARKHANGELSK" onclick="chooseServer(this.dataset.server)">[56] ARKHANGELSK</button>
+<button type="button" data-server="57|ORENBURG" onclick="chooseServer(this.dataset.server)">[57] ORENBURG</button>
+<button type="button" data-server="58|KIROV" onclick="chooseServer(this.dataset.server)">[58] KIROV</button>
+<button type="button" data-server="59|KEMEROVO" onclick="chooseServer(this.dataset.server)">[59] KEMEROVO</button>
+<button type="button" data-server="60|TYUMEN" onclick="chooseServer(this.dataset.server)">[60] TYUMEN</button>
+<button type="button" data-server="61|TOLYATTI" onclick="chooseServer(this.dataset.server)">[61] TOLYATTI</button>
+<button type="button" data-server="62|IVANOVO" onclick="chooseServer(this.dataset.server)">[62] IVANOVO</button>
+<button type="button" data-server="63|STAVROPOL" onclick="chooseServer(this.dataset.server)">[63] STAVROPOL</button>
+<button type="button" data-server="64|SMOLENSK" onclick="chooseServer(this.dataset.server)">[64] SMOLENSK</button>
+<button type="button" data-server="65|PSKOV" onclick="chooseServer(this.dataset.server)">[65] PSKOV</button>
+<button type="button" data-server="66|BRYANSK" onclick="chooseServer(this.dataset.server)">[66] BRYANSK</button>
+<button type="button" data-server="67|OREL" onclick="chooseServer(this.dataset.server)">[67] OREL</button>
+<button type="button" data-server="68|YAROSLAVL" onclick="chooseServer(this.dataset.server)">[68] YAROSLAVL</button>
+<button type="button" data-server="69|BARNAUL" onclick="chooseServer(this.dataset.server)">[69] BARNAUL</button>
+<button type="button" data-server="70|LIPETSK" onclick="chooseServer(this.dataset.server)">[70] LIPETSK</button>
+<button type="button" data-server="71|ULYANOVSK" onclick="chooseServer(this.dataset.server)">[71] ULYANOVSK</button>
+<button type="button" data-server="72|YAKUTSK" onclick="chooseServer(this.dataset.server)">[72] YAKUTSK</button>
+<button type="button" data-server="73|TAMBOV" onclick="chooseServer(this.dataset.server)">[73] TAMBOV</button>
+<button type="button" data-server="74|BRATSK" onclick="chooseServer(this.dataset.server)">[74] BRATSK</button>
+<button type="button" data-server="75|ASTRAKHAN" onclick="chooseServer(this.dataset.server)">[75] ASTRAKHAN</button>
+<button type="button" data-server="76|CHITA" onclick="chooseServer(this.dataset.server)">[76] CHITA</button>
+<button type="button" data-server="77|KOSTROMA" onclick="chooseServer(this.dataset.server)">[77] KOSTROMA</button>
+<button type="button" data-server="78|VLADIMIR" onclick="chooseServer(this.dataset.server)">[78] VLADIMIR</button>
+<button type="button" data-server="79|KALUGA" onclick="chooseServer(this.dataset.server)">[79] KALUGA</button>
+<button type="button" data-server="80|NOVGOROD" onclick="chooseServer(this.dataset.server)">[80] NOVGOROD</button>
+<button type="button" data-server="81|TAGANROG" onclick="chooseServer(this.dataset.server)">[81] TAGANROG</button>
+<button type="button" data-server="82|VOLOGDA" onclick="chooseServer(this.dataset.server)">[82] VOLOGDA</button>
+<button type="button" data-server="83|TVER" onclick="chooseServer(this.dataset.server)">[83] TVER</button>
+<button type="button" data-server="84|TOMSK" onclick="chooseServer(this.dataset.server)">[84] TOMSK</button>
+<button type="button" data-server="85|IZHEVSK" onclick="chooseServer(this.dataset.server)">[85] IZHEVSK</button>
+<button type="button" data-server="86|SURGUT" onclick="chooseServer(this.dataset.server)">[86] SURGUT</button>
+<button type="button" data-server="87|PODOLSK" onclick="chooseServer(this.dataset.server)">[87] PODOLSK</button>
+<button type="button" data-server="88|MAGADAN" onclick="chooseServer(this.dataset.server)">[88] MAGADAN</button>
+<button type="button" data-server="89|CHEREPOVETS" onclick="chooseServer(this.dataset.server)">[89] CHEREPOVETS</button>
+<button type="button" data-server="90|NORILSK" onclick="chooseServer(this.dataset.server)">[90] NORILSK</button>
+<button type="button" data-server="91|ASTANA" onclick="chooseServer(this.dataset.server)">[91] ASTANA</button></div>
+  </div>
+</div>
+<div class="tabs" id="categoryTabs"><button class="active" data-cat="Все" onclick="setCategory('Все')">Все</button><button data-cat="Машины" onclick="setCategory('Машины')">🚗 Машины</button><button data-cat="Дома" onclick="setCategory('Дома')">🏠 Дома</button><button data-cat="Бизнес" onclick="setCategory('Бизнес')">🏢 Бизнес</button><button data-cat="Одежда" onclick="setCategory('Одежда')">👕 Одежда</button><button data-cat="Аксессуары" onclick="setCategory('Аксессуары')">🕶️ Аксессуары</button><button data-cat="Предметы" onclick="setCategory('Предметы')">💎 Предметы</button></div>
+<div class="feature-bar"><button class="mini-btn" id="favoriteFilterBtn" onclick="toggleFavoriteFilter()">❤️ Избранное</button><button class="mini-btn" id="notifyBtn" type="button" aria-disabled="true" style="cursor:default">🔔 <span id="notifyLabel">Уведомления</span> <span id="notifyCount" class="notify-dot hidden" aria-live="polite">0</span></button><button class="mini-btn" id="newFilterBtn" onclick="setSort('new')">🆕 Новые</button></div>
+<div class="price-label">ФИЛЬТР ПО ЦЕНЕ</div><div class="sort-row"><button id="sortLow" type="button" onclick="setSort('low')">↑ Низкая → высокая</button><button id="sortHigh" type="button" onclick="setSort('high')">↓ Высокая → низкая</button></div><div class="filters"><input id="priceMin" type="number" min="0" placeholder="От"><input id="priceMax" type="number" min="0" placeholder="До"><button type="button" class="red" onclick="render()">Применить</button><button type="button" onclick="clearPriceFilter()">Сбросить</button></div><div id="list" class="grid"></div></section>
+<section id="sell" class="hidden"><div class="box"><h2>➕ Новое объявление</h2><form id="sellForm" class="stack"><select id="cat"><option>Машины</option><option>Дома</option><option>Бизнес</option><option>Одежда</option><option>Аксессуары</option><option>Предметы</option><option>Другое</option></select>
+<select id="server" required><option value="">Выберите сервер</option><option value="01|RED">[01] RED</option>
+<option value="02|GREEN">[02] GREEN</option>
+<option value="03|BLUE">[03] BLUE</option>
+<option value="04|YELLOW">[04] YELLOW</option>
+<option value="05|ORANGE">[05] ORANGE</option>
+<option value="06|PURPLE">[06] PURPLE</option>
+<option value="07|LIME">[07] LIME</option>
+<option value="08|PINK">[08] PINK</option>
+<option value="09|CHERRY">[09] CHERRY</option>
+<option value="10|BLACK">[10] BLACK</option>
+<option value="11|INDIGO">[11] INDIGO</option>
+<option value="12|WHITE">[12] WHITE</option>
+<option value="13|MAGENTA">[13] MAGENTA</option>
+<option value="14|CRIMSON">[14] CRIMSON</option>
+<option value="15|GOLD">[15] GOLD</option>
+<option value="16|AZURE">[16] AZURE</option>
+<option value="17|PLATINUM">[17] PLATINUM</option>
+<option value="18|AQUA">[18] AQUA</option>
+<option value="19|GRAY">[19] GRAY</option>
+<option value="20|ICE">[20] ICE</option>
+<option value="21|CHILLI">[21] CHILLI</option>
+<option value="22|CHOCO">[22] CHOCO</option>
+<option value="23|MOSCOW">[23] MOSCOW</option>
+<option value="24|SPB">[24] SPB</option>
+<option value="25|UFA">[25] UFA</option>
+<option value="26|SOCHI">[26] SOCHI</option>
+<option value="27|KAZAN">[27] KAZAN</option>
+<option value="28|SAMARA">[28] SAMARA</option>
+<option value="29|ROSTOV">[29] ROSTOV</option>
+<option value="30|ANAPA">[30] ANAPA</option>
+<option value="31|EKB">[31] EKB</option>
+<option value="32|KRASNODAR">[32] KRASNODAR</option>
+<option value="33|ARZAMAS">[33] ARZAMAS</option>
+<option value="34|NOVOSIB">[34] NOVOSIB</option>
+<option value="35|GROZNY">[35] GROZNY</option>
+<option value="36|SARATOV">[36] SARATOV</option>
+<option value="37|OMSK">[37] OMSK</option>
+<option value="38|IRKUTSK">[38] IRKUTSK</option>
+<option value="39|VOLGOGRAD">[39] VOLGOGRAD</option>
+<option value="40|VORONEZH">[40] VORONEZH</option>
+<option value="41|BELGOROD">[41] BELGOROD</option>
+<option value="42|MAKHACHKALA">[42] MAKHACHKALA</option>
+<option value="43|VLADIKAVKAZ">[43] VLADIKAVKAZ</option>
+<option value="44|VLADIVOSTOK">[44] VLADIVOSTOK</option>
+<option value="45|KALININGRAD">[45] KALININGRAD</option>
+<option value="46|CHELYABINSK">[46] CHELYABINSK</option>
+<option value="47|KRASNOYARSK">[47] KRASNOYARSK</option>
+<option value="48|CHEBOKSARY">[48] CHEBOKSARY</option>
+<option value="49|KHABAROVSK">[49] KHABAROVSK</option>
+<option value="50|PERM">[50] PERM</option>
+<option value="51|TULA">[51] TULA</option>
+<option value="52|RYAZAN">[52] RYAZAN</option>
+<option value="53|MURMANSK">[53] MURMANSK</option>
+<option value="54|PENZA">[54] PENZA</option>
+<option value="55|KURSK">[55] KURSK</option>
+<option value="56|ARKHANGELSK">[56] ARKHANGELSK</option>
+<option value="57|ORENBURG">[57] ORENBURG</option>
+<option value="58|KIROV">[58] KIROV</option>
+<option value="59|KEMEROVO">[59] KEMEROVO</option>
+<option value="60|TYUMEN">[60] TYUMEN</option>
+<option value="61|TOLYATTI">[61] TOLYATTI</option>
+<option value="62|IVANOVO">[62] IVANOVO</option>
+<option value="63|STAVROPOL">[63] STAVROPOL</option>
+<option value="64|SMOLENSK">[64] SMOLENSK</option>
+<option value="65|PSKOV">[65] PSKOV</option>
+<option value="66|BRYANSK">[66] BRYANSK</option>
+<option value="67|OREL">[67] OREL</option>
+<option value="68|YAROSLAVL">[68] YAROSLAVL</option>
+<option value="69|BARNAUL">[69] BARNAUL</option>
+<option value="70|LIPETSK">[70] LIPETSK</option>
+<option value="71|ULYANOVSK">[71] ULYANOVSK</option>
+<option value="72|YAKUTSK">[72] YAKUTSK</option>
+<option value="73|TAMBOV">[73] TAMBOV</option>
+<option value="74|BRATSK">[74] BRATSK</option>
+<option value="75|ASTRAKHAN">[75] ASTRAKHAN</option>
+<option value="76|CHITA">[76] CHITA</option>
+<option value="77|KOSTROMA">[77] KOSTROMA</option>
+<option value="78|VLADIMIR">[78] VLADIMIR</option>
+<option value="79|KALUGA">[79] KALUGA</option>
+<option value="80|NOVGOROD">[80] NOVGOROD</option>
+<option value="81|TAGANROG">[81] TAGANROG</option>
+<option value="82|VOLOGDA">[82] VOLOGDA</option>
+<option value="83|TVER">[83] TVER</option>
+<option value="84|TOMSK">[84] TOMSK</option>
+<option value="85|IZHEVSK">[85] IZHEVSK</option>
+<option value="86|SURGUT">[86] SURGUT</option>
+<option value="87|PODOLSK">[87] PODOLSK</option>
+<option value="88|MAGADAN">[88] MAGADAN</option>
+<option value="89|CHEREPOVETS">[89] CHEREPOVETS</option>
+<option value="90|NORILSK">[90] NORILSK</option>
+<option value="91|ASTANA">[91] ASTANA</option></select><div id="serverRequiredNote" class="server-required-note" role="status" aria-live="polite">Выберите сервер, чтобы опубликовать объявление.</div><input id="title" required placeholder="Название"><input id="price" type="number" required placeholder="Цена"><textarea id="desc" placeholder="Описание"></textarea><label class="muted" style="display:block;margin-top:10px">Фото объявления</label><input id="image" type="file" accept=".jpg,.jpeg,.png,.webp" multiple style="display:block;width:100%;padding:12px;background:#111923;color:#fff;border:1px solid #293443;border-radius:10px;margin-top:8px" onchange="showSelectedPhoto(this)"><div id="imageName" class="muted" style="margin-top:6px;font-size:12px">Можно выбрать только готовое фото из телефона.</div><button id="publishBtn" type="submit" class="red publish-btn">Опубликовать</button></form></div></section>
+<section id="mylistings" class="hidden"><div class="box"><div class="section-head"><h2>📋 Мои объявления</h2><span class="muted">Управление</span></div><div class="muted" style="font-size:11px;margin-bottom:10px">Ваши объявления и быстрые действия.</div><div id="myListings"></div></div></section><section id="chats" class="hidden"><div class="box"><div class="section-head"><h2>💬 Чаты</h2><span class="muted">Сообщения</span></div><div id="chatList"></div></div></section>
+<section id="profile" class="hidden"><div class="box"><h2>👤 Профиль</h2><div id="me">Войдите, чтобы увидеть профиль.</div></div></section>
+<section id="admin" class="hidden"><div class="box admin"><h2>🛡️ Панель владельца / администратора</h2><p class="muted">Управление администраторами. Удаление объявления доступно прямо внутри самого объявления.</p><div id="adminManage" class="box"><h3>👥 Администраторы</h3><div class="row"><input id="adminEmail" type="email" placeholder="Email пользователя"><button class="red" onclick="addAdmin()">Назначить</button></div><div id="adminUsers" style="margin-top:10px"></div></div></div></section>
+</main>
+<div class="bottom"><button class="active" onclick="go('home',this)">🏠<br>Главная</button><button onclick="go('sell',this)">➕<br>Продать</button><button onclick="go('mylistings',this)">📋<br>Мои</button><button onclick="go('chats',this)">💬<br>Чаты</button><button onclick="go('profile',this)">👤<br>Профиль</button></div>
+</div>
+<div id="detailModal" class="modal"><div class="sheet"><div class="row"><h2 id="detailTitle">Объявление</h2><button onclick="closeDetail()">✕</button></div><div id="detailContent"></div></div></div>
+<div id="chatModal" class="modal"><div class="sheet chat-sheet"><div class="chat-head"><div class="row"><h2 id="chatTitle">Чат</h2><button style="flex:0 0 auto;padding:7px 10px;font-size:12px" onclick="closeChat()">✕</button></div></div><div id="chatMessages" class="chat-messages"></div><div class="chat-compose"><div class="row"><input id="chatInput" placeholder="Напишите сообщение…" maxlength="1000"><button class="red" style="flex:0 0 auto" onclick="sendChatMessage()">➤</button></div></div></div></div>
+<div id="modal" class="modal"><div class="sheet"><div class="row"><h2 id="mtitle">Вход</h2><button onclick="closeModal()">✕</button></div><form id="authForm" class="stack"><input id="email" type="email" required placeholder="Email"><input id="pass" type="password" required minlength="6" placeholder="Пароль"><input id="username" placeholder="Ник — нужен только при регистрации"><div class="row"><button type="button" onclick="signup()">Регистрация</button><button type="button" class="red" onclick="login()">Войти</button></div></form></div></div>
+<script>
+const SUPABASE_URL='https://vcrcldvaijqmktucvjvv.supabase.co';
+const SUPABASE_ANON_KEY='sb_publishable_-rroax150pudqcB0hpnaKQ_KUAAAJ-E';
+let sb=null;
+function getSB(){
+  if(!sb && window.supabase && typeof window.supabase.createClient==='function'){
+    sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+  }
+  return sb;
+}
+let cat='Все', me=null, profile=null;
+let serverFilter='';
+let sortMode='new';
+let favoriteOnly=false;
+let favorites=JSON.parse(localStorage.getItem('brmarket_favorites')||'[]');
+let viewed=JSON.parse(localStorage.getItem('brmarket_viewed')||'{}');
+let ratings=JSON.parse(localStorage.getItem('brmarket_ratings')||'{}');
+let onlinePulseKey='brmarket_online_'+(me?.id||'guest');
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money=n=>new Intl.NumberFormat('ru-RU').format(n)+' ₽';
+function go(id,b){
+  ['home','sell','mylistings','chats','profile','admin'].forEach(x=>document.getElementById(x).classList.toggle('hidden',x!==id));
+  document.querySelectorAll('.bottom button').forEach(x=>x.classList.remove('active'));
+  b?.classList.add('active');
+  if(id==='home')render();
+  if(id==='profile'){
+    if(!me){openAuth();return;}
+    profileLoad();
+  }
+  if(id==='sell' && !me){openAuth();return;}
+  if(id==='mylistings'){if(!me){openAuth();return;} myListingsLoad();}
+  if(id==='chats'){if(!me){openAuth();return;}loadChats();}
+  if(id==='admin'){if(!profile||!['owner','admin'].includes(profile.role)){go('home',null);return;}adminLoad();}
+}
+function openAuth(){document.getElementById('modal').classList.add('show')}
+function closeModal(){document.getElementById('modal').classList.remove('show')}
+async function login(){
+  const db=getSB(); if(!db)return alert('Не удалось подключиться к серверу. Обновите страницу.');
+  let {error}=await db.auth.signInWithPassword({email:document.getElementById('email').value.trim(),password:document.getElementById('pass').value});
+  if(error)return alert(error.message);
+  closeModal();
+  await boot();
+  if(me) profileLoad();
+}
+window.continueSignupAfterRules=function(){window.__brSignupResumedAfterRules=true;signup();};
+async function signup(){
+  if(!window.__brSignupResumedAfterRules && typeof window.brMarketRequireRulesBeforeSignup==='function' && window.brMarketRequireRulesBeforeSignup())return;
+  window.__brSignupResumedAfterRules=false;
+  let u=document.getElementById('username').value.trim();
+  if(!u)return alert('Укажите ник');
+  const db=getSB(); if(!db)return alert('Не удалось подключиться к серверу. Обновите страницу.');
+  let {data,error}=await db.auth.signUp({
+    email:document.getElementById('email').value.trim(),
+    password:document.getElementById('pass').value,
+    options:{data:{username:u}}
+  });
+  if(error)return alert(error.message);
+  closeModal();
+  if(data.session){
+    alert('Аккаунт создан и вы вошли.');
+    await boot();
+  }else{
+    alert('Аккаунт создан. Проверьте почту и подтвердите email, если подтверждение включено.');
+  }
+}
+async function boot(){
+  const db=getSB(); if(!db){ me=null; profile=null; return; }
+  let r=await db.auth.getSession();
+  me=r.data?.session?.user || null;
+  profile=null;
+  if(me){
+    setOnline();
+    // First signed-in account claims ownership once; after an owner exists this only reads the role.
+    await db.rpc('claim_owner');
+    let roleRes=await db.rpc('my_site_role');
+    let role=roleRes.data||'user';
+    let p=await db.from('profiles').select('*').eq('id',me.id).maybeSingle();
+    if(p.error){console.error(p.error);}
+    profile=p.data||null;
+    if(profile) profile.role=role==='owner'||role==='admin'?'admin':'user';
+    document.getElementById('authBtn').textContent=profile?.username||'Профиль';
+    document.getElementById('authBtn').onclick=()=>go('profile',null);
+    if(profile?.role==='admin' && !document.getElementById('adminTopBtn')){
+      let b=document.createElement('button');
+      b.id='adminTopBtn';
+      b.textContent='🛡️ Админ';
+      b.onclick=()=>go('admin',null);
+      document.querySelector('.top').appendChild(b);
+    }
+    if(document.getElementById('profile') && !document.getElementById('profile').classList.contains('hidden')) profileLoad();
+  }else{
+    document.getElementById('authBtn').textContent='Войти';
+    document.getElementById('authBtn').onclick=openAuth;
+    const adminBtn=document.getElementById('adminTopBtn');
+    if(adminBtn) adminBtn.remove();
+  }
+  await render();
+  await updateUnreadBadge();
+}
+async function toggleServerMenu(){
+  document.getElementById('serverMenu').classList.toggle('show');
+}
+function chooseServer(value){
+  serverFilter=value;
+  document.getElementById('serverPickText').textContent=value ? '['+value.split('|')[0]+'] '+value.split('|').slice(1).join('|') : 'Все серверы';
+  document.querySelectorAll('#serverMenu button').forEach(b=>b.classList.toggle('selected',b.dataset.server===value));
+  document.getElementById('serverMenu').classList.remove('show');
+  render();
+}
+function placeholderFor(category){
+  const map={
+    'Машины':'assets/cars.jpg',
+    'Дома':'assets/homes.jpg',
+    'Бизнес':'assets/business.jpg',
+    'Одежда':'assets/clothes.jpg',
+    'Аксессуары':'assets/accessories.jpg',
+    'Предметы':'assets/items.jpg',
+    'Другое':'assets/other.jpg'
+  };
+  return map[category]||'assets/city.jpg';
+}
+function setCategory(value){
+  cat=value;
+  document.querySelectorAll('#categoryTabs button').forEach(b=>b.classList.toggle('active',b.dataset.cat===value));
+  render();
+}
+function setSort(mode){
+  sortMode=mode;
+  document.getElementById('sortLow')?.classList.toggle('active',mode==='low');
+  document.getElementById('sortHigh')?.classList.toggle('active',mode==='high');
+  document.getElementById('newFilterBtn')?.classList.toggle('active',mode==='new');
+  render();
+}
+function clearPriceFilter(){
+  const a=document.getElementById('priceMin'),b=document.getElementById('priceMax');
+  if(a)a.value=''; if(b)b.value=''; render();
+}
+async function render(){
+  let q=(document.getElementById('q')?.value||'').toLowerCase();
+  const minRaw=document.getElementById('priceMin')?.value, maxRaw=document.getElementById('priceMax')?.value;
+  const min=minRaw!==''&&minRaw!=null?Number(minRaw):null, max=maxRaw!==''&&maxRaw!=null?Number(maxRaw):null;
+  const db=getSB(); if(!db){document.getElementById('list').innerHTML='<div class="box">Подключение к базе данных ещё не готово. Нажмите «Обновить».</div>';return;}
+  let query=db.from('listings').select('*,profiles(username)').eq('status','active');
+  if(cat!=='Все') query=query.eq('category',cat);
+  if(serverFilter) query=query.eq('server',serverFilter);
+  if(min!==null&&!Number.isNaN(min)) query=query.gte('price',min);
+  if(max!==null&&!Number.isNaN(max)) query=query.lte('price',max);
+  if(sortMode==='low') query=query.order('price',{ascending:true});
+  else if(sortMode==='high') query=query.order('price',{ascending:false});
+  else query=query.order('created_at',{ascending:false});
+  let {data,error}=await query;
+  if(error){document.getElementById('list').innerHTML='<div class="box">Ошибка загрузки: '+esc(error.message)+'</div>';return}
+  data=data.filter(x=>!q||x.title.toLowerCase().includes(q)||x.description.toLowerCase().includes(q));
+  if(favoriteOnly) data=data.filter(x=>favorites.includes(x.id));
+  document.getElementById('list').innerHTML=data.map(x=>`<article class="card" onclick="openDetail('${x.id}')" style="cursor:pointer">
+    <div class="thumb-wrap"><button class="favorite-btn ${favorites.includes(x.id)?'is-favorite':''}" aria-label="Избранное"  onclick="event.stopPropagation();toggleFavorite('${x.id}')">${favorites.includes(x.id)?'❤️':'♡'}</button><div class="thumb ${x.image_url?'':'art'}">${x.image_url?`<img src="${esc(x.image_url)}" style="width:100%;height:100%;object-fit:cover">`:`<img class="placeholder-art" src="${placeholderFor(x.category)}" alt="${esc(x.category)}">`}</div></div>
+    <div class="body">
+      <span class="muted">${esc(x.category)}</span>
+      <h3>${esc(x.title)}</h3>
+      <div class="price">${money(x.price)}</div>
+      <div class="server-badge">🌐 ${esc(x.server ? '['+x.server.split('|')[0]+'] '+x.server.split('|').slice(1).join('|') : 'Сервер не указан')}</div>${expiryText(x.expires_at)}
+      <button class="red" style="width:100%;margin-top:9px" onclick="event.stopPropagation();contact('${x.seller_id}','${x.id}')">💬 Написать продавцу</button>
+    </div>
+  </article>`).join('')||'<div class="box">Пока нет объявлений на выбранном сервере.</div>'
+}
+
+function expiryText(ts){if(!ts)return '';const d=new Date(ts)-Date.now();if(d<=0)return '<div class="expiry">⏳ Срок истёк</div>';const h=Math.floor(d/3600000),days=Math.floor(h/24);return `<div class="expiry">⏳ ${days?days+' д. ':''}${h%24} ч. до окончания</div>`;}
+function toggleFavorite(id){favorites=favorites.includes(id)?favorites.filter(x=>x!==id):[...favorites,id];localStorage.setItem('brmarket_favorites',JSON.stringify(favorites));render();}
+function toggleFavoriteFilter(){favoriteOnly=!favoriteOnly;document.getElementById('favoriteFilterBtn')?.classList.toggle('active',favoriteOnly);render();}
+function showNotifications(){if(!me)return openAuth();loadChats().then(()=>alert('Уведомления основаны на новых сообщениях. Откройте «Чаты», чтобы ответить.'));}
+function chatReadStorageKey(){return me?'brmarket_chat_reads_'+me.id:null;}
+function getChatReads(){try{return JSON.parse(localStorage.getItem(chatReadStorageKey())||'{}')}catch(_){return {};}}
+function setChatRead(other,listing){if(!me||!other)return;const key=other+'|'+(listing||'');const reads=getChatReads();reads[key]=new Date().toISOString();localStorage.setItem(chatReadStorageKey(),JSON.stringify(reads));updateUnreadBadge();}
+async function updateUnreadBadge(){
+  const badge=document.getElementById('notifyCount');if(!badge)return;
+  if(!me){badge.textContent='0';badge.classList.add('hidden');return;}
+  const db=getSB();if(!db)return;
+  const r=await db.from('messages').select('sender_id,recipient_id,listing_id,created_at').eq('recipient_id',me.id).order('created_at',{ascending:false});
+  if(r.error){console.warn('Не удалось обновить счётчик уведомлений',r.error.message);return;}
+  const reads=getChatReads(),unread=new Set();
+  for(const m of (r.data||[])){
+    const key=m.sender_id+'|'+(m.listing_id||'');
+    if(!reads[key]||new Date(m.created_at)>new Date(reads[key]))unread.add(key);
+  }
+  const count=unread.size;badge.textContent=count>99?'99+':String(count);badge.classList.toggle('hidden',count===0);
+}
+async function markViewed(id){
+  const db=getSB(); if(!db)return;
+  // The database function increments a single counter per listing; no per-view rows are stored.
+  const {error}=await db.rpc('increment_listing_view',{listing_uuid:id});
+  if(error) console.warn('Не удалось увеличить просмотры:',error.message);
+}
+async function rateListing(listingId,sellerId,n){
+  if(!me)return openAuth();
+  if(me.id===sellerId)return alert('Нельзя оценить своё объявление.');
+  const db=getSB(); if(!db)return alert('Нет подключения к базе данных.');
+  const {error}=await db.from('listing_ratings').upsert({listing_id:listingId,rater_id:me.id,rating:n},{onConflict:'listing_id,rater_id'});
+  if(error)return alert('Не удалось сохранить оценку объявления. Выполните SQL-настройку рейтинга объявлений. '+error.message);
+  // Refresh the same listing without counting another view.
+  await openDetail(listingId,false); await updateUnreadBadge();
+}
+async function listingRatingSummary(listingId){
+  const db=getSB(); if(!db)return {avg:0,count:0,mine:0};
+  const {data,error}=await db.from('listing_ratings').select('rater_id,rating').eq('listing_id',listingId);
+  if(error){console.warn('Рейтинг объявления:',error.message);return {avg:0,count:0,mine:0};}
+  const rows=data||[];return {avg:rows.length?rows.reduce((a,x)=>a+x.rating,0)/rows.length:0,count:rows.length,mine:rows.find(x=>x.rater_id===me?.id)?.rating||0};
+}
+async function listingViews(id){const db=getSB();if(!db)return 0;const {data,error}=await db.from('listing_views').select('views').eq('listing_id',id).maybeSingle();if(error){console.warn('Просмотры:',error.message);return 0;}return data?.views||0;}
+let currentDetailId=null;
+function onlineState(uid){return localStorage.getItem('brmarket_online_'+uid)==='1';}
+function setOnline(){if(!me)return;onlinePulseKey='brmarket_online_'+me.id;localStorage.setItem(onlinePulseKey,'1');}
+function myStats(rows){let favs=rows.reduce((a,x)=>a+(favorites.includes(x.id)?1:0),0);return `<div class="stat-grid"><div class="stat"><b>${rows.length}</b><span>📋 объявлений</span></div><div class="stat"><b>${favs}</b><span>❤️ избранных</span></div></div>`;}
+
+async function openDetail(id,countView=true){
+  currentDetailId=id;
+  const db=getSB(); if(!db)return;
+  const r=await db.from('listings').select('*,profiles(username)').eq('id',id).maybeSingle();
+  if(r.error||!r.data)return alert(r.error?.message||'Объявление не найдено');
+  const x=r.data;
+  if(countView) await markViewed(id);
+  const [views,ratingInfo]=await Promise.all([listingViews(id),listingRatingSummary(x.id)]);
+  const photos=Array.isArray(x.photos)&&x.photos.length ? x.photos : (x.image_url?[x.image_url]:[]);
+  const server=x.server ? '['+x.server.split('|')[0]+'] '+x.server.split('|').slice(1).join('|') : 'Сервер не указан';
+  document.getElementById('detailTitle').textContent=x.title;
+  document.getElementById('detailContent').innerHTML=`
+    <div class="muted">${esc(x.category)} · 🌐 ${esc(server)}</div>
+    <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0">${photos.map(u=>`<img src="${esc(u)}" style="width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:10px">`).join('')||'<div class="box">Фото нет</div>'}</div>
+    <div class="price" style="font-size:24px">${money(x.price)}</div>
+    <p style="white-space:pre-wrap">${esc(x.description||'Описание не указано.')}</p>
+    <div class="muted">👤 ${onlineState(x.seller_id)?'<span class="online-dot"></span>Сейчас онлайн':'<span class="offline-dot"></span>Не в сети'} · ${esc(x.profiles?.username||'Продавец')}</div><div class="muted" style="margin-top:5px">👁 ${views} просмотров этого объявления</div><div style="margin-top:8px"><span class="seller-rating">⭐ ${ratingInfo.count?ratingInfo.avg.toFixed(1):'—'}</span> <span class="rating-summary">${ratingInfo.count} оценок продавца</span></div><div class="rating"><span class="muted">Оценить это объявление:</span>${[1,2,3,4,5].map(n=>`<button aria-label="${n} звёзд" onclick="event.stopPropagation();rateListing('${x.id}','${x.seller_id}',${n})" style="color:${n<=(ratingInfo.mine||0)?'#ffd166':'#8993a2'}">${n<=(ratingInfo.mine||0)?'★':'☆'}</button>`).join('')}</div><div class="muted">${me?(ratingInfo.mine?'Ваша оценка этого объявления сохранена; её можно изменить.':'Одна оценка на объявление от пользователя; её можно изменить.'):'Войдите, чтобы оценить продавца.'}</div>
+    <button style="width:100%;margin-top:10px" onclick="toggleFavorite('${x.id}')">${favorites.includes(x.id)?'❤️ В избранном':'♡ Добавить в избранное'}</button><button class="red" style="width:100%;margin-top:12px" onclick="contact('${x.seller_id}','${x.id}')">💬 Написать продавцу</button>
+    ${profile?.role==='admin' ? `<div class="box admin" style="margin-top:12px"><b>🛡️ Админ-панель объявления</b><button class="red" style="width:100%;margin-top:8px" onclick="deleteAdminListing('${x.id}')">🗑️ Удалить объявление</button></div>` : ''}`;
+  document.getElementById('detailModal').classList.add('show');
+}
+function closeDetail(){document.getElementById('detailModal').classList.remove('show')}
+async function contact(seller,listing){
+  if(!me)return openAuth();
+  if(seller===me.id)return alert('Это ваше объявление.');
+  await openChat(seller,listing);
+}
+let activeChat=null, chatChannel=null;
+async function openChat(other,listing){
+  const db=getSB(); if(!db||!me)return;
+  activeChat={other,listing};
+  setChatRead(other,listing);
+  let p=await db.from('profiles').select('username').eq('id',other).maybeSingle();
+  document.getElementById('chatTitle').textContent='💬 '+(p.data?.username||'Пользователь');
+  document.getElementById('chatModal').classList.add('show');
+  await loadChatMessages();
+  if(chatChannel) await db.removeChannel(chatChannel);
+  chatChannel=db.channel('chat:'+me.id+':'+other+':'+(listing||'none'))
+    .on('postgres_changes',{event:'*',schema:'public',table:'messages'},()=>loadChatMessages())
+    .subscribe();
+  setTimeout(()=>document.getElementById('chatInput')?.focus(),50);
+}
+function closeChat(){document.getElementById('chatModal').classList.remove('show'); if(chatChannel){getSB()?.removeChannel(chatChannel);chatChannel=null;} activeChat=null;}
+async function loadChatMessages(){
+  if(!activeChat||!me)return;
+  const db=getSB(); if(!db)return;
+  let q=db.from('messages').select('id,sender_id,recipient_id,listing_id,text,created_at').eq('listing_id',activeChat.listing).order('created_at',{ascending:true});
+  q=q.or(`and(sender_id.eq.${me.id},recipient_id.eq.${activeChat.other}),and(sender_id.eq.${activeChat.other},recipient_id.eq.${me.id})`);
+  const r=await q;
+  const box=document.getElementById('chatMessages');
+  if(r.error){box.innerHTML='<div class="danger">'+esc(r.error.message)+'</div>';return;}
+  if(activeChat)setChatRead(activeChat.other,activeChat.listing);
+  box.innerHTML=(r.data||[]).map(m=>`<div style="max-width:82%;justify-self:${m.sender_id===me.id?'end':'start'};background:${m.sender_id===me.id?'linear-gradient(135deg,#6d1020,#3a1017)':'#17202c'};padding:9px 11px;border-radius:${m.sender_id===me.id?'14px 14px 4px 14px':'14px 14px 14px 4px'};box-shadow:0 5px 16px #0004"><div style="font-size:12px;line-height:1.35">${esc(m.text)}</div><small class="muted">${new Date(m.created_at).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}</small></div>`).join('')||'<div class="empty-chat">Начните переписку. Здесь появятся сообщения.</div>';
+  box.scrollTop=box.scrollHeight;
+}
+async function sendChatMessage(){
+  const input=document.getElementById('chatInput'); const text=input.value.trim();
+  if(!text||!activeChat||!me)return;
+  const db=getSB(); if(!db)return;
+  const r=await db.from('messages').insert({sender_id:me.id,recipient_id:activeChat.other,listing_id:activeChat.listing,text});
+  if(r.error)return alert('Не удалось отправить: '+r.error.message);
+  input.value=''; await loadChatMessages(); await updateUnreadBadge();
+}
+async function loadChats(){
+  const box=document.getElementById('chatList'); if(!me){box.innerHTML='';return;}
+  const db=getSB(); if(!db)return;
+  const r=await db.from('messages').select('sender_id,recipient_id,listing_id,text,created_at').or(`sender_id.eq.${me.id},recipient_id.eq.${me.id}`).order('created_at',{ascending:false});
+  if(r.error){box.innerHTML='<div class="danger">'+esc(r.error.message)+'</div>';return;}
+  const groups=new Map();
+  for(const m of (r.data||[])){const other=m.sender_id===me.id?m.recipient_id:m.sender_id;const key=other+'|'+(m.listing_id||'');if(!groups.has(key))groups.set(key,{other,listing:m.listing_id,last:m});}
+  const rows=[...groups.values()];
+  if(!rows.length){box.innerHTML='<div class="muted">Пока нет чатов. Откройте объявление и нажмите «Написать продавцу».</div>';return;}
+  const profs={};
+  for(const g of rows){let p=await db.from('profiles').select('username').eq('id',g.other).maybeSingle();profs[g.other]=p.data?.username||'Пользователь';}
+  box.innerHTML=rows.map(g=>`<button class="chat-list-item" onclick="openChat('${g.other}','${g.listing||''}')"><div class="chat-avatar">💬</div><div class="chat-preview"><b>${esc(profs[g.other])}</b><span class="muted">${esc(g.last.text||'')}</span></div><span class="chat-time">${new Date(g.last.created_at).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}</span></button>`).join('');
+}
+
+function showSelectedPhoto(input){
+  const files=Array.from(input.files||[]);
+  const el=document.getElementById('imageName');
+  if(files.length>10){
+    input.value='';
+    el.textContent='Можно выбрать максимум 10 фото.';
+    return;
+  }
+  el.textContent=files.length ? `Выбрано фото: ${files.length}` : 'Можно выбрать только готовое фото из телефона.';
+}
+
+async function myListingsLoad(){
+  const box=document.getElementById('myListings');
+  if(!me){box.innerHTML='<div class="muted">Войдите в аккаунт.</div>';return;}
+  const db=getSB(); if(!db){box.innerHTML='<div class="muted">Нет подключения к базе данных.</div>';return;}
+  const r=await db.from('listings').select('*').eq('seller_id',me.id).order('created_at',{ascending:false});
+  if(r.error){box.innerHTML='<div class="danger">'+esc(r.error.message)+'</div>';return;}
+  const rows=r.data||[];
+  const viewCounts={}; await Promise.all(rows.map(async x=>{viewCounts[x.id]=await listingViews(x.id)}));
+  box.innerHTML=myStats(rows)+rows.map(x=>`<div class="box my-list-item">
+    <div style="display:flex;gap:10px;align-items:center">
+      <div style="width:70px;height:55px;flex:0 0 70px;border-radius:8px;overflow:hidden;background:#17202c;display:grid;place-items:center;font-size:20px">${x.image_url?`<img src="${esc(x.image_url)}" style="width:100%;height:100%;object-fit:cover">`:'📦'}</div>
+      <div style="flex:1"><b>${esc(x.title)}</b><div class="price">${money(x.price)}</div><div class="muted">👁 ${viewCounts[x.id]||0} просмотров этого объявления</div><div class="muted">🌐 ${esc(x.server?('['+x.server.split('|')[0]+'] '+x.server.split('|').slice(1).join('|')):'Сервер не указан')}</div></div>
+    </div>
+    <div class="my-list-actions"><button onclick="editListing('${x.id}')">✏️ Редактировать</button><button class="red" onclick="deleteMyListing('${x.id}')">🗑️ Удалить</button></div>
+  </div>`).join('')||'<div class="muted">У вас пока нет объявлений.</div>';
+}
+async function editListing(id){
+  const db=getSB(); if(!db)return alert('Нет подключения к базе данных.');
+  const r=await db.from('listings').select('*').eq('id',id).eq('seller_id',me.id).maybeSingle();
+  if(r.error||!r.data)return alert(r.error?.message||'Объявление не найдено');
+  const x=r.data;
+  const title=prompt('Название:',x.title); if(title===null)return;
+  const price=prompt('Цена:',x.price); if(price===null)return;
+  const desc=prompt('Описание:',x.description||''); if(desc===null)return;
+  const u=await db.from('listings').update({title:title.trim(),price:Number(price),description:desc.trim()}).eq('id',id).eq('seller_id',me.id);
+  if(u.error)return alert(u.error.message);
+  alert('Объявление изменено');
+  myListingsLoad(); render();
+}
+async function deleteMyListing(id){
+  if(!confirm('Удалить ваше объявление?'))return;
+  const db=getSB(); if(!db)return alert('Нет подключения к базе данных.');
+  const r=await db.from('listings').delete().eq('id',id).eq('seller_id',me.id);
+  if(r.error)return alert('Не удалось удалить: '+r.error.message);
+  myListingsLoad(); render();
+}
+async function adminLoad(){
+  if(!profile||profile.role!=='admin')return;
+  const db=getSB(); if(!db)return;
+  const roleRes=await db.rpc('my_site_role');
+  const realRole=roleRes.data||'admin';
+  const manage=document.getElementById('adminManage');
+  if(realRole!=='owner'){
+    manage.innerHTML='<div class="muted">Только владелец может назначать и снимать администраторов.</div>';
+    return;
+  }
+  loadAdmins();
+}
+async function deleteAdminListing(id){
+  if(!profile||profile.role!=='admin')return alert('Нет доступа.');
+  if(!confirm('Удалить это объявление?'))return;
+  const db=getSB(); if(!db)return alert('Нет подключения к базе данных.');
+  const r=await db.from('listings').delete().eq('id',id);
+  if(r.error)return alert('Не удалось удалить: '+r.error.message);
+  closeDetail();
+  await render();
+  alert('Объявление удалено.');
+}
+async function addAdmin(){
+  const email=document.getElementById('adminEmail').value.trim(); if(!email)return alert('Введите email пользователя.');
+  const r=await getSB().rpc('add_site_admin_by_email',{target_email:email});
+  if(r.error)return alert(r.error.message); document.getElementById('adminEmail').value=''; alert('Администратор назначен.'); loadAdmins();
+}
+async function loadAdmins(){
+  const db=getSB(); const box=document.getElementById('adminUsers'); if(!db)return;
+  const r=await db.from('site_admins').select('user_id,role,created_at').order('created_at');
+  if(r.error){box.innerHTML='<div class="danger">'+esc(r.error.message)+'</div>';return;}
+  const rows=[]; for(const a of (r.data||[])){let p=await db.from('profiles').select('username').eq('id',a.user_id).maybeSingle(); rows.push({a,name:p.data?.username||'Пользователь'});}
+  box.innerHTML=rows.map(x=>`<div class="row" style="margin-bottom:6px"><div><b>${esc(x.name)}</b><div class="muted">${x.a.role}</div></div>${x.a.role==='admin'?`<button onclick="removeAdmin('${x.a.user_id}')">Снять</button>`:''}</div>`).join('');
+}
+async function removeAdmin(uid){if(!confirm('Снять администратора?'))return;const r=await getSB().rpc('remove_site_admin',{target_user:uid});if(r.error)return alert(r.error.message);loadAdmins();}
+async function profileLoad(){
+  if(!me || !profile){
+    document.getElementById('me').innerHTML='<span class="muted">Профиль не найден. Выйдите и войдите снова.</span>';
+    return;
+  }
+  const db=getSB(); let ratingInfo={avg:0,count:0};
+  if(db){const r=await db.from('seller_ratings').select('rating').eq('seller_id',me.id);if(!r.error&&r.data?.length)ratingInfo={avg:r.data.reduce((a,x)=>a+x.rating,0)/r.data.length,count:r.data.length};}
+  document.getElementById('me').innerHTML=`<b>${esc(profile.username)}</b><p class="muted">Email: ${esc(me.email||'')}</p><p class="muted">Роль: ${profile.role==='admin'?'Владелец / администратор':'Пользователь'}</p><div class="box" style="margin:10px 0"><span class="seller-rating">⭐ ${ratingInfo.count?ratingInfo.avg.toFixed(1):'—'}</span> <span class="rating-summary">${ratingInfo.count} оценок продавца</span></div><div class="stat-grid"><div class="stat"><b>${favorites.length}</b><span>❤️ избранное</span></div><div class="stat"><b>${ratingInfo.count}</b><span>⭐ оценок получено</span></div></div><button onclick="toggleFavoriteFilter();go('home',document.querySelector('.bottom button'))">❤️ Открыть избранное</button><button onclick="logoutToHome()">Выйти</button>`;
+}
+async function logoutToHome(){
+  const db=getSB();
+  if(db) await db.auth.signOut();
+  me=null;
+  profile=null;
+  const adminBtn=document.getElementById('adminTopBtn');
+  if(adminBtn) adminBtn.remove();
+  closeDetail();
+  closeChat();
+  closeModal();
+  go('home',document.querySelector('.bottom button'));
+  await render();
+}
+
+
+async function compressImage(file){return new Promise((resolve,reject)=>{if(!file.type.startsWith('image/'))return reject(new Error('Неверный формат фото'));const img=new Image(),url=URL.createObjectURL(file);img.onload=()=>{let max=1600,w=img.width,h=img.height;if(Math.max(w,h)>max){if(w>=h){h=Math.round(h*max/w);w=max}else{w=Math.round(w*max/h);h=max}}const c=document.createElement('canvas');c.width=w;c.height=h;const ctx=c.getContext('2d');ctx.drawImage(img,0,0,w,h);c.toBlob(b=>{URL.revokeObjectURL(url);b?resolve(b):reject(new Error('Не удалось обработать фото'))},'image/jpeg',.82)};img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('Не удалось открыть фото'))};img.src=url})}
+async function uploadListingPhotos(files,userId){const db=getSB(),urls=[];for(let i=0;i<files.length;i++){const blob=await compressImage(files[i]);const path=`${userId}/${crypto.randomUUID()}.jpg`;const up=await db.storage.from('listing-images').upload(path,blob,{contentType:'image/jpeg',upsert:false});if(up.error)throw up.error;const pub=db.storage.from('listing-images').getPublicUrl(path);urls.push(pub.data.publicUrl)}return urls}
+function updatePublishButton(){const server=document.getElementById('server');const btn=document.getElementById('publishBtn');const note=document.getElementById('serverRequiredNote');const ready=!!server?.value;if(btn){btn.classList.toggle('ready',ready);btn.setAttribute('aria-disabled',String(!ready));}if(ready&&note){note.classList.remove('show');note.textContent='';}}
+document.getElementById('server')?.addEventListener('change',updatePublishButton);
+document.getElementById('server')?.addEventListener('input',updatePublishButton);
+updatePublishButton();
+document.getElementById('sellForm')?.addEventListener('submit',async e=>{e.preventDefault();const server=document.getElementById('server').value;const note=document.getElementById('serverRequiredNote');const btn=document.getElementById('publishBtn');if(!server){if(note){note.textContent='Выберите сервер';note.classList.add('show');}document.getElementById('server')?.focus();updatePublishButton();return;}if(note){note.classList.remove('show');note.textContent='';}if(!me){openAuth();return;}const db=getSB();if(!db){alert('Нет подключения к базе данных. Обновите страницу и попробуйте снова.');return;}btn.disabled=true;btn.textContent='Публикация…';try{const files=Array.from(document.getElementById('image').files||[]);if(files.length>10)throw new Error('Можно выбрать максимум 10 фото.');const photos=files.length?await uploadListingPhotos(files,me.id):[];const days=2;const payload={seller_id:me.id,category:document.getElementById('cat').value,title:document.getElementById('title').value.trim(),price:Number(document.getElementById('price').value),description:document.getElementById('desc').value.trim(),server,status:'active',image_url:photos[0]||null,photos,expires_at:new Date(Date.now()+days*86400000).toISOString()};if(!payload.title||!Number.isFinite(payload.price)||payload.price<0)throw new Error('Проверьте название и цену.');const r=await db.from('listings').insert(payload).select('id').single();if(r.error)throw r.error;document.getElementById('sellForm')?.reset();document.getElementById('imageName').textContent='Можно выбрать только готовое фото из телефона.';if(note){note.classList.remove('show');note.textContent='';}updatePublishButton();alert('Объявление опубликовано!');go('home',document.querySelector('.bottom button'));await render();}catch(err){alert('Не удалось опубликовать: '+(err?.message||err))}finally{btn.disabled=false;btn.textContent='Опубликовать';updatePublishButton();}});
+document.addEventListener('DOMContentLoaded',()=>{
+  const db=getSB();
+  if(db) db.auth.onAuthStateChange(()=>setTimeout(boot,0));
+  boot();
+  setInterval(()=>updateUnreadBadge(),20000);
+});
+</script>
+<script>
+/* BR Market rules: show only when a user starts registration, not on normal visits. */
+(function(){
+  const KEY='brMarketRulesAcceptedBeforeSignup_v1';
+  let pendingSignup=false;
+  let timerInterval=null;
+  function showRules(){
+    const overlay=document.getElementById('br-rules-overlay');
+    const close=document.getElementById('br-rules-close');
+    const timer=document.getElementById('br-rules-timer');
+    if(!overlay||!close||!timer)return false;
+    overlay.hidden=false;
+    close.hidden=true;
+    let remaining=5;
+    timer.textContent='Кнопка закрытия появится через 5 секунд';
+    if(timerInterval)clearInterval(timerInterval);
+    timerInterval=setInterval(()=>{
+      remaining--;
+      if(remaining<=0){
+        close.hidden=false;
+        timer.textContent='';
+        clearInterval(timerInterval);
+        timerInterval=null;
+      }else timer.textContent='Кнопка закрытия появится через '+remaining+' секунд';
+    },1000);
+    return true;
+  }
+  function acceptRules(){
+    const overlay=document.getElementById('br-rules-overlay');
+    if(overlay)overlay.hidden=true;
+    if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
+    try{localStorage.setItem(KEY,'1')}catch(e){}
+    if(pendingSignup){
+      pendingSignup=false;
+      if(typeof window.continueSignupAfterRules==='function')window.continueSignupAfterRules();
+    }
+  }
+  window.brMarketRequireRulesBeforeSignup=function(){
+    let accepted=false;
+    try{accepted=localStorage.getItem(KEY)==='1'}catch(e){}
+    if(accepted)return false;
+    pendingSignup=true;
+    showRules();
+    return true;
+  };
+  document.addEventListener('DOMContentLoaded',()=>{
+    const close=document.getElementById('br-rules-close');
+    if(close)close.addEventListener('click',acceptRules);
+    document.addEventListener('keydown',e=>{
+      const overlay=document.getElementById('br-rules-overlay');
+      if(e.key==='Escape'&&overlay&&!overlay.hidden&&close&&!close.hidden)acceptRules();
+    });
+  });
+})();
+</script>
+</body></html>
